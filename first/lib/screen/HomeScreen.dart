@@ -249,6 +249,10 @@ class _MyHomePageState extends State<HomeScreen> {
     Navigator.of(context).pushReplacementNamed('Loginscreen');
   }
 
+  void ToFormMatch() {
+    Navigator.of(context).pushReplacementNamed('TicketFormScreen');
+  }
+
 //METHODE ARTICLE TAPER
   void ArticleDetaills() {
     Navigator.of(context).pushReplacementNamed('Loginscreen');
@@ -801,9 +805,12 @@ class _MyHomePageState extends State<HomeScreen> {
                           ),
                           side: const BorderSide(color: Colors.blue),
                         ),
-                        child: const Text(
-                          'Réserver votre ticket',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        child: ElevatedButton(
+                          onPressed: ToFormMatch,
+                          child: const Text(
+                            'Réserver le ticket',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),

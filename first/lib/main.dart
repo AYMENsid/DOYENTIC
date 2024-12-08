@@ -2,6 +2,7 @@ import 'package:first/screen/ArticleDetaills.dart';
 import 'package:first/screen/HomeScreen.dart';
 //import 'package:first/screen/Matchs.dart';
 import 'package:first/screen/PasswordR.dart';
+import 'package:first/screen/TicketFormScreen.dart';
 //import 'package:first/screen/store.dart';
 import 'package:flutter/material.dart';
 import 'package:first/screen/login.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           'Loginscreen': (context) => const Loginscreen(),
           //'StoreScreen': (context) => const StoreScreen(),
           'WelcomeScreen': (context) => const WelcomeScreen(),
+          'TicketFormScreen': (context) => const TicketFormScreen(),
         });
   }
 }

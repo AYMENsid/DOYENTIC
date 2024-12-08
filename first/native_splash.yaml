@@ -1,0 +1,14 @@
+# flutter splash 
+flutter_native_splash:
+  color: "#A0BD9F"
+  image: "assets/background.png" # Le chemin vers ton logo (remplace `your_logo.png` par ton logo)
+  branding: "assets/brand.png"
+  android: true
+  ios: true
+  web: false
+
+ 
+  android_12:
+   color: "#A0BD9F"
+   image: "assets/background.png"
+   branding: "assets/brand.png"

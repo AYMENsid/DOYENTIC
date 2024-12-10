@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:http/http.dart' as http;
@@ -19,11 +17,11 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   final _emailController = TextEditingController();
   final _eventController = TextEditingController();
   final _dateController = TextEditingController();
+  bool _isLoading = false;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final url = Uri.parse(
-          'http://10.0.2.2/flutterback/ticketinfo.php'); // Remplace par l'URL de ton API PHP
+      final url = Uri.parse('http://10.0.2.2/flutterback/ticketinfo.php');
 
       try {
         final response = await http.post(
@@ -37,25 +35,12 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
           }),
         );
 
-        if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-
-          if (responseData["success"]) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(responseData["message"])),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(responseData["error"] ??
-                      "Une erreur s'est produite. Veuillez réessayer.")),
-            );
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Erreur côté serveur.")),
-          );
-        }
+        final responseData = jsonDecode(response.body);
+        final message = responseData["success"]
+            ? responseData["message"]
+            : responseData["error"] ?? "Une erreur s'est produite.";
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(message)));
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Erreur de connexion.")),
@@ -65,97 +50,6 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   }
 
   Future<void> _generateAndPreviewPDF() async {
-    Future<void> _generateAndPreviewPDF() async {
-      final pdf = pw.Document();
-
-      // Charger une image
-      final logo = await imageFromAssetBundle('images/mca.png');
-
-      pdf.addPage(
-        pw.Page(
-          build: (context) {
-            return pw.Container(
-              decoration: pw.BoxDecoration(
-                gradient: pw.LinearGradient(
-                  colors: [PdfColors.lightBlue, PdfColors.blue],
-                ),
-              ),
-              child: pw.Padding(
-                padding: const pw.EdgeInsets.all(16.0),
-                child: pw.Column(
-                  mainAxisAlignment: pw.MainAxisAlignment.start,
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    // Ajouter une image
-                    pw.Center(
-                      child: pw.Image(logo, width: 100, height: 100),
-                    ),
-                    pw.SizedBox(height: 20),
-
-                    // Titre stylisé
-                    pw.Text(
-                      "Votre Ticket",
-                      style: pw.TextStyle(
-                        fontSize: 24,
-                        fontWeight: pw.FontWeight.bold,
-                        color: PdfColors.red,
-                      ),
-                    ),
-                    pw.Divider(color: PdfColors.white),
-
-                    // Contenu avec styles
-                    pw.Text(
-                      "Nom : ${_nameController.text}",
-                      style: pw.TextStyle(fontSize: 16, color: PdfColors.red),
-                    ),
-                    pw.Text(
-                      "Email : ${_emailController.text}",
-                      style: pw.TextStyle(fontSize: 16, color: PdfColors.red),
-                    ),
-                    pw.Text(
-                      "Événement : ${_eventController.text}",
-                      style: pw.TextStyle(fontSize: 16, color: PdfColors.red),
-                    ),
-                    pw.Text(
-                      "Date : ${_dateController.text}",
-                      style: pw.TextStyle(fontSize: 16, color: PdfColors.red),
-                    ),
-                    pw.SizedBox(height: 20),
-
-                    // QR Code centré
-                    pw.Center(
-                      child: pw.Container(
-                        width: 150,
-                        height: 150,
-                        child: pw.BarcodeWidget(
-                          barcode: pw.Barcode.qrCode(),
-                          data:
-                              "${_nameController.text}|${_emailController.text}|${_eventController.text}|${_dateController.text}",
-                          drawText: false,
-                        ),
-                      ),
-                    ),
-
-                    pw.SizedBox(height: 10),
-                    pw.Text(
-                      "Scannez le QR Code à l'entrée de l'événement.",
-                      textAlign: pw.TextAlign.center,
-                      style: pw.TextStyle(color: PdfColors.red),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      );
-
-      // Afficher le PDF dans une vue ou l'imprimer
-      await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save(),
-      );
-    }
-
     final pdf = pw.Document();
 
     final name = _nameController.text;
@@ -168,37 +62,26 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
 
     pdf.addPage(
       pw.Page(
-        build: (context) {
-          return pw.Column(
-            mainAxisAlignment: pw.MainAxisAlignment.center,
-            children: [
-              pw.Text("Votre Ticket",
-                  style: pw.TextStyle(
-                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(height: 20),
-              pw.Text(ticketData, textAlign: pw.TextAlign.center),
-              pw.SizedBox(height: 20),
-              pw.Center(
-                child: pw.Container(
-                  width: 150,
-                  height: 150,
-                  child: pw.BarcodeWidget(
-                    barcode: pw.Barcode.qrCode(),
-                    data: "$name|$email|$event|$date",
-                    drawText: false,
-                  ),
-                ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Text("Scannez le QR Code à l'entrée de l'événement."),
-            ],
-          );
-        },
+        build: (context) => pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
+          children: [
+            pw.Text("Votre Ticket", style: pw.TextStyle(fontSize: 20)),
+            pw.SizedBox(height: 20),
+            pw.Text(ticketData),
+            pw.SizedBox(height: 20),
+            pw.BarcodeWidget(
+              barcode: pw.Barcode.qrCode(),
+              data: "$name|$email|$event|$date",
+              width: 100,
+              height: 100,
+            ),
+          ],
+        ),
       ),
     );
 
     await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdf.save(),
+      onLayout: (format) async => pdf.save(),
     );
   }
 
@@ -206,86 +89,135 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 160, 189, 159),
         title: const Text('Formulaire de Ticket'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('HomeScreen');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Nom complet'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre nom.';
-                  }
-                  return null;
-                },
+        child: SingleChildScrollView(
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Nom complet',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Veuillez entrer votre nom.'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre email.';
+                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                            .hasMatch(value)) {
+                          return 'Veuillez entrer un email valide.';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _eventController,
+                      decoration: InputDecoration(
+                        labelText: 'Événement',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Veuillez entrer un événement.'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _dateController,
+                      decoration: InputDecoration(
+                        labelText: 'Date (JJ/MM/AAAA)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onTap: () async {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                        );
+                        if (pickedDate != null) {
+                          _dateController.text =
+                              DateFormat('dd/MM/yyyy').format(pickedDate);
+                        }
+                      },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Veuillez entrer une date.'
+                          : null,
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                if (_formKey.currentState!.validate()) {
+                                  await _submitForm();
+                                  await _generateAndPreviewPDF();
+                                }
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 160, 189, 159),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 15,
+                          ),
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text('Générer le ticket'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre email.';
-                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Veuillez entrer un email valide.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _eventController,
-                decoration: const InputDecoration(labelText: 'Événement'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer le nom de l’événement.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _dateController,
-                decoration:
-                    const InputDecoration(labelText: 'Date (JJ/MM/AAAA)'),
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2100),
-                  );
-                  if (pickedDate != null) {
-                    _dateController.text =
-                        DateFormat('dd/MM/yyyy').format(pickedDate);
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer une date.';
-                  } else if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value)) {
-                    return 'Veuillez entrer une date valide (JJ/MM/AAAA).';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _submitForm();
-                    _generateAndPreviewPDF();
-                  }
-                },
-                child: const Text('Générer le ticket'),
-              ),
-            ],
+            ),
           ),
         ),
       ),

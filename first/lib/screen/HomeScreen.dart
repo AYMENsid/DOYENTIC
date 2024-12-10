@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:first/screen/ArticleDetaills.dart';
 import 'product_details.dart';
 import 'buystore.dart';
+import 'package:photo_view/photo_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -723,11 +725,13 @@ class _MyHomePageState extends State<HomeScreen> {
                       // Équipe A
                       Column(
                         children: [
-                          Image.asset(
-                            match['imageA'],
-                            width: 40,
-                            height: 40,
-                          ),
+                          match['imageA'] != null
+                              ? Image.asset(
+                                  match['imageA'],
+                                  width: 40,
+                                  height: 40,
+                                )
+                              : const Icon(Icons.error, size: 40),
                           const SizedBox(height: 8),
                           Text(
                             match['equipeA'] ?? 'Real Madrid',
@@ -772,11 +776,13 @@ class _MyHomePageState extends State<HomeScreen> {
                       // Équipe B
                       Column(
                         children: [
-                          Image.asset(
-                            match['imageB'],
-                            width: 40,
-                            height: 40,
-                          ),
+                          match['imageB'] != null
+                              ? Image.asset(
+                                  match['imageB'],
+                                  width: 40,
+                                  height: 40,
+                                )
+                              : const Icon(Icons.error, size: 40),
                           const SizedBox(height: 8),
                           Text(
                             match['equipeB'] ?? 'Milan',
@@ -794,9 +800,8 @@ class _MyHomePageState extends State<HomeScreen> {
                   Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          // Logique pour ouvrir le centre de match
-                        },
+                        onPressed:
+                            ToFormMatch, // Implement this function to handle navigation
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.blue,
@@ -805,12 +810,9 @@ class _MyHomePageState extends State<HomeScreen> {
                           ),
                           side: const BorderSide(color: Colors.blue),
                         ),
-                        child: ElevatedButton(
-                          onPressed: ToFormMatch,
-                          child: const Text(
-                            'Réserver le ticket',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        child: const Text(
+                          'Réserver le ticket',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -833,7 +835,536 @@ class _MyHomePageState extends State<HomeScreen> {
     );
   }
 
-//STOOOORE
+//HOME ESSAI
+  Widget _buildHomeFootball() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image principale avec zoom plein écran
+
+            Image.asset('images/doyen.png'),
+
+            SizedBox(height: 20),
+
+            // Titre "La naissance du doyen"
+            Text(
+              "La naissance du doyen",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Texte descriptif
+            Text(
+              "En 1921, Abderahmane Aouf, un jeune de 19 ans, décide de créer le premier club musulman représentant l'identité musulmane algérienne, après avoir entendu les paroles moqueuses d'un soldat français envers des enfants jouant au football sur l'actuelle place des Martyrs : « Voici le Parc des Princes des Arabes. »",
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Row des deux images avec zoom interactif en plein écran et texte en bas
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.zero,
+                          child: Container(
+                            color: Colors.black,
+                            child: PhotoView(
+                              imageProvider: AssetImage('images/1921.jpg'),
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset('images/1921.jpg',
+                            height: 140, fit: BoxFit.cover),
+                        SizedBox(height: 8),
+                        Text('Composition 1921',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.cairo(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.zero,
+                          child: Container(
+                            color: Colors.black,
+                            child: PhotoView(
+                              imageProvider: AssetImage('images/aouf.jpg'),
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset('images/aouf.jpg',
+                            height: 140, fit: BoxFit.cover),
+                        SizedBox(height: 8),
+                        Text('Abderahmane Aouf',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.cairo(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20),
+            Text(
+              "Palmarès actuel :",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '8', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '8', "Coupe d'Algerie"),
+            _buildRow('images/titre.png', '1', "Champions league"),
+            _buildRow('images/titre.png', '3', "Super coupe d'Algerie"),
+            _buildRow('images/titre.png', '1', "Coupe de la ligue"),
+            _buildRow('images/titre.png', '2', "Championnat maghrebine"),
+            _buildRow(
+                'images/titre.png', '2', "Championnat d'Algerie-Francaise"),
+            _buildRow('images/titre.png', '2', "Coupe d'Algerie-Francaise"),
+            Image.asset('images/doyen.png'),
+          ],
+        ),
+      ),
+    );
+  }
+
+//HOME BASKETBALL
+  Widget _buildHomeBasketball() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image principale avec zoom plein écran
+
+            Image.asset('images/doyen.png'),
+
+            SizedBox(height: 20),
+
+            // Titre "La naissance du doyen"
+            Text(
+              "La naissance du section",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Texte descriptif
+            Text(
+              "En 1940, l'administration du Mouloudia, sous la présidence de Mouloud Djazouli, a demandé à Adoune Mahmoud avec l'aide de Assla Houcine et Bachtarzi de créer une section de basket-ball au sein du Mouloudia d'Alger. Cela a marqué la naissance d'une des nombreuses sections sportives du club, telles que la water-polo,VolleyBall, la gymnastique, la boxe, et le cyclisme.",
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Row des deux images avec zoom interactif en plein écran et texte en bas
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.zero,
+                          child: Container(
+                            color: Colors.black,
+                            child: PhotoView(
+                              imageProvider:
+                                  AssetImage('images/adounMahmoud.jpg'),
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset('images/adounMahmoud.jpg',
+                            height: 140, fit: BoxFit.cover),
+                        SizedBox(height: 8),
+                        Text('Adoune Mahmoud',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.cairo(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.zero,
+                          child: Container(
+                            color: Colors.black,
+                            child: PhotoView(
+                              imageProvider: AssetImage('images/basket.jpg'),
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset('images/basket.jpg',
+                            height: 140, fit: BoxFit.cover),
+                        SizedBox(height: 8),
+                        Text('Composition des années 40 ',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.cairo(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20),
+            Text(
+              "Palmarès actuel :",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Hommes:",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '21', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '20', "Coupe d'Algerie"),
+
+            _buildRow('images/titre.png', '1', "Coupe arab"),
+            _buildRow('images/titre.png', '2', "Championnat maghrebine"),
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Femmes:",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '13', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '6', "Coupe d'Algerie"),
+            _buildRow('images/titre.png', '1', "Coupe arab"),
+
+            Image.asset('images/doyen.png'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //home volleyball
+
+  Widget _buildHomeVoleyball() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image principale avec zoom plein écran
+
+            Image.asset('images/doyen.png'),
+
+            SizedBox(height: 20),
+
+            // Titre "La naissance du doyen"
+            Text(
+              "La naissance du section",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Texte descriptif
+            Text(
+              "Après avoir contribué au développement du basketball, Mouloud Djazouli a pris une décision cruciale pour l'histoire du sport au sein du Mouloudia Club d'Alger (MCA). En 1947, il a décidé de créer une section de volleyball pour le club. Cette initiative a marqué une diversification des activités sportives et a enrichi l'identité du MCA, en intégrant le volleyball comme une composante essentielle du club",
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Row des deux images avec zoom interactif en plein écran et texte en bas
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.zero,
+                          child: Container(
+                            color: Colors.black,
+                            child: PhotoView(
+                              imageProvider: AssetImage('images/djazouli.jpg'),
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset('images/djazouli.jpg',
+                            height: 140, fit: BoxFit.cover),
+                        SizedBox(height: 8),
+                        Text('Mouloud Djazouli',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.cairo(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
+
+            SizedBox(height: 20),
+            Text(
+              "Palmarès actuel :",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Hommes:",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '10', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '13', "Coupe d'Algerie"),
+
+            _buildRow('images/titre.png', '2', "Champions league"),
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Femmes:",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '23', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '29', "Coupe d'Algerie"),
+            _buildRow('images/titre.png', '1', "Champions league"),
+            _buildRow('images/titre.png', '1', "Coupe arab"),
+
+            Image.asset('images/doyen.png'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //HOME HANBALL
+  Widget _buildHomeHandball() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image principale avec zoom plein écran
+
+            Image.asset('images/doyen.png'),
+
+            SizedBox(height: 20),
+
+            // Titre "La naissance du doyen"
+            Text(
+              "La naissance du section",
+              style: GoogleFonts.cairo(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Texte descriptif
+            Text(
+              "La section handball du Mouloudia d'Alger, créée en 1964, est une équipe historique dans le monde du handball. Pour déterminer si elle est la plus titrée au niveau mondial avant des clubs comme le FC Barcelone et Zamalek, cela dépend des titres remportés dans les compétitions locales, régionales et internationales.",
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            Text(
+              "Palmarès actuel :",
+              style: GoogleFonts.cairo(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Section Hommes :",
+              style: GoogleFonts.cairo(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '28', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '29', "Coupe d'Algerie"),
+            _buildRow('images/titre.png', '11', "Champions league"),
+            _buildRow('images/titre.png', '2', "Super coupe d'Algerie"),
+            _buildRow('images/titre.png', '1', "coupe des vaiqueurs de CL"),
+            _buildRow('images/titre.png', '9', "Super coupe africaine"),
+            _buildRow('images/titre.png', '2', "Coupe arab"),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              "Section Femmes :",
+              style: GoogleFonts.cairo(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+
+            // Autres lignes avec images et titres
+            _buildRow('images/titre.png', '26', "Championnat d'Algerie"),
+            _buildRow('images/titre.png', '20', "Coupe d'Algerie"),
+
+            _buildRow('images/titre.png', '4', "Super coupe d'Algerie"),
+            _buildRow('images/titre.png', '3', "coupe des vaiqueurs de CL"),
+
+            _buildRow('images/titre.png', '1', "Coupe arab"),
+
+            Image.asset('images/doyen.png'),
+          ],
+        ),
+      ),
+    );
+  }
+
+// Fonction pour construire un Row réutilisable
+  Widget _buildRow(String imagePath, String number, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            imagePath,
+            width: 100,
+            height: 100,
+          ),
+          SizedBox(width: 20),
+          Text(
+            number,
+            style: GoogleFonts.cairo(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            // Ajouté pour éviter les débordements horizontaux
+            child: Text(
+              title,
+              style: GoogleFonts.oswald(fontSize: 20, color: Colors.black),
+              overflow: TextOverflow.ellipsis, // Coupe le texte si trop long
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 // Afficher la boutique
   Widget _buildProductStore() {
     return Column(
@@ -947,6 +1478,22 @@ class _MyHomePageState extends State<HomeScreen> {
       return _isLoading
           ? const CircularProgressIndicator()
           : _buildVolleyballInfo();
+    } else if (_selectedSport == 'Football' && _selectedBottomIndex == 0) {
+      return _isLoading
+          ? const CircularProgressIndicator()
+          : _buildHomeFootball();
+    } else if (_selectedSport == 'Handball' && _selectedBottomIndex == 0) {
+      return _isLoading
+          ? const CircularProgressIndicator()
+          : _buildHomeHandball();
+    } else if (_selectedSport == 'Basketball' && _selectedBottomIndex == 0) {
+      return _isLoading
+          ? const CircularProgressIndicator()
+          : _buildHomeBasketball();
+    } else if (_selectedSport == 'Volley-ball' && _selectedBottomIndex == 0) {
+      return _isLoading
+          ? const CircularProgressIndicator()
+          : _buildHomeVoleyball();
     }
 
     // Retourne le texte générique pour les autres onglets

@@ -1,5 +1,6 @@
 import 'package:first/screen/ArticleDetaills.dart';
 import 'package:first/screen/HomeScreen.dart';
+
 //import 'package:first/screen/Matchs.dart';
 import 'package:first/screen/PasswordR.dart';
 import 'package:first/screen/TicketFormScreen.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
           'PasswordR': (context) => const PasswordR(),
           'Signupscreen': (context) => const Signupscreen(),
           'Loginscreen': (context) => const Loginscreen(),
-          //'StoreScreen': (context) => const StoreScreen(),
+          //'Matchs': (context) => const Matchs(),
           'WelcomeScreen': (context) => const WelcomeScreen(),
           'TicketFormScreen': (context) => const TicketFormScreen(),
         });

@@ -19,7 +19,7 @@ class _MyHomePageState extends State<HomeScreen> {
   String _searchQuery = "";
 
   int _selectedBottomIndex = 0; // Indice de la bottom bar
-  String _selectedSport = 'Handball'; // Sport sélectionné dans le drawer
+  String _selectedSport = 'Football'; // Sport sélectionné dans le drawer
   bool _isLoading = false; // Indicateur de chargement des données
   List<dynamic> _basketballArticles =
       []; // Liste d'articles BASKETBALL récupérés
@@ -408,57 +408,61 @@ class _MyHomePageState extends State<HomeScreen> {
   }
 
   // Affichage des articles de FOOTBALL
-  Widget _buildfootballInfo() {
+  Widget _buildFootballInfo() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: _footballArticles.map((article) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16.0),
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8.0, horizontal: 16.0), // Ajustez les paddings
-              child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center, // Alignement vertical centré
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ArticleDetails(articleId: article['id'].toString()),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.only(
+                  bottom: 16.0, right: 16, left: 16, top: 16),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
                 children: [
-                  // Affichage de l'image à gauche
-                  article['image'] != null
-                      ? Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            image: DecorationImage(
-                              image: AssetImage(article['image']),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : Container(
-                          width: 80,
-                          height: 80,
-                          color: Colors.grey,
-                          child: const Icon(Icons.image),
-                        ),
-                  const SizedBox(width: 16), // Espace entre l'image et le texte
-                  // Contenu textuel à droite de l'image
-                  Expanded(
+                  // Image en haut
+                  Container(
+                    width: double.infinity,
+                    height: 220, // Augmente la hauteur pour un effet plus grand
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12.0),
+                        topRight: Radius.circular(12.0),
+                      ),
+                      image: DecorationImage(
+                        image: article['image'] != null
+                            ? AssetImage(article['image'])
+                            : const AssetImage(
+                                'assets/images/default_image.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  // Contenu en bas (titre et sous-titre)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           article['title'] ?? 'Titre non disponible',
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 22, // Texte légèrement plus grand
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -474,63 +478,59 @@ class _MyHomePageState extends State<HomeScreen> {
 // Affichage des articles de VolleyBall
   Widget _buildVolleyballInfo() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: _VolleyballArticles.map((article) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16.0),
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ArticleDetails(articleId: article['id'].toString()),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.only(
+                  bottom: 16.0, right: 16, left: 16, top: 16),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
                 children: [
-                  // Affichage de l'image à gauche
-                  article['image'] != null
-                      ? Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  article['image']), // Utilisez AssetImage ici
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : Container(
-                          width: 80,
-                          height: 80,
-                          color: Colors.grey,
-                          child: const Icon(Icons.image),
-                        ),
-                  const SizedBox(width: 16), // Espace entre l'image et le texte
-                  // Contenu textuel à droite de l'image
-                  Expanded(
+                  // Image en haut
+                  Container(
+                    width: double.infinity,
+                    height: 220, // Augmente la hauteur pour un effet plus grand
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12.0),
+                        topRight: Radius.circular(12.0),
+                      ),
+                      image: DecorationImage(
+                        image: article['image'] != null
+                            ? AssetImage(article['image'])
+                            : const AssetImage(
+                                'assets/images/default_image.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  // Contenu en bas (titre et sous-titre)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           article['title'] ?? 'Titre non disponible',
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 22, // Texte légèrement plus grand
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          article['subtitle'] ?? 'Sous-titre non disponible',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(article['content'] ?? 'Contenu non disponible'),
                       ],
                     ),
                   ),
@@ -701,7 +701,7 @@ class _MyHomePageState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        match['type'] ?? 'Football • First Team',
+                        match['type'] ?? 'Football • Equipe sénior',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -817,7 +817,7 @@ class _MyHomePageState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        match['lieu'] ?? 'Soccer Champions Tour • Rose Bowl',
+                        match['lieu'] ?? 'Stade Ali-Ammar • Alger',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -1465,7 +1465,7 @@ class _MyHomePageState extends State<HomeScreen> {
     } else if (_selectedSport == 'Football' && _selectedBottomIndex == 3) {
       return _isLoading
           ? const CircularProgressIndicator()
-          : _buildfootballInfo();
+          : _buildFootballInfo();
     } else if (_selectedSport == 'Handball' && _selectedBottomIndex == 3) {
       return _isLoading
           ? const CircularProgressIndicator()

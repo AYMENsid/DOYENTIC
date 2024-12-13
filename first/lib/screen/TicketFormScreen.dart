@@ -12,6 +12,7 @@ class TicketFormScreen extends StatefulWidget {
 }
 
 class _TicketFormScreenState extends State<TicketFormScreen> {
+  List<dynamic> _InfosTicket = [];
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -47,6 +48,59 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
         );
       }
     }
+  }
+
+  Future<void> _TicDispo() async {
+    final url = 'http://10.0.2.2/flutterback/TicDispo.php';
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final body = response.body;
+
+        try {
+          final data = jsonDecode(body);
+
+          setState(() {
+            if (data['data'] != null && data['data'] is List) {
+              _InfosTicket =
+                  data['data']; // On extrait les tickets de la clé "data"
+            } else {
+              _InfosTicket = [];
+            }
+          });
+        } catch (e) {
+          debugPrint('Erreur de parsing JSON : $e');
+          setState(() {
+            _InfosTicket = [];
+          });
+        }
+      } else {
+        debugPrint('Serveur : réponse ${response.statusCode}');
+        setState(() {
+          _InfosTicket = [];
+        });
+      }
+    } catch (e) {
+      debugPrint('Erreur de connexion : $e');
+      setState(() {
+        _InfosTicket = [];
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _TicDispo(); // Appel pour récupérer les tickets au démarrage
   }
 
   Future<void> _generateAndPreviewPDF() async {
@@ -113,6 +167,18 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Afficher nbrtic et TotalTicket tout en haut
+                    _InfosTicket.isNotEmpty
+                        ? Text(
+                            'Nbr Tickets: ${_InfosTicket.first['ticnbr']} / Total Tickets: ${_InfosTicket.first['TotalTicket']}',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          )
+                        : Text('Aucun ticket disponible',
+                            style: TextStyle(fontSize: 18)),
+
+                    const SizedBox(height: 20),
+
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(

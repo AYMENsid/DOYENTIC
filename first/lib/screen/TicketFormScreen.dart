@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +10,7 @@ import 'package:intl/intl.dart';
 
 class TicketFormScreen extends StatefulWidget {
   const TicketFormScreen({super.key});
+
   @override
   _TicketFormScreenState createState() => _TicketFormScreenState();
 }
@@ -16,14 +20,20 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _eventController = TextEditingController();
+  final _numController = TextEditingController();
   final _dateController = TextEditingController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _TicDispo(); // Appel pour récupérer les tickets au démarrage
+  }
+
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final url = Uri.parse('http://10.0.2.2/flutterback/ticketinfo.php');
-
+      final url = Uri.parse(
+          'http://192.168.100.2/flutterback/ticketinfo.php'); // 10.0.2.2 sur emulateur
       try {
         final response = await http.post(
           url,
@@ -32,7 +42,7 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
             "nom": _nameController.text,
             "email": _emailController.text,
             "date_naissance": _dateController.text,
-            "event": _eventController.text,
+            "event": _numController.text,
           }),
         );
 
@@ -51,43 +61,25 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   }
 
   Future<void> _TicDispo() async {
-    final url = 'http://10.0.2.2/flutterback/TicDispo.php';
-
+    final url =
+        'http://192.168.100.2/flutterback/TicDispo.php'; // 10.0.2.2 sur emulateur
     setState(() {
       _isLoading = true;
     });
 
     try {
       final response = await http.get(Uri.parse(url));
-
       if (response.statusCode == 200) {
-        final body = response.body;
-
-        try {
-          final data = jsonDecode(body);
-
-          setState(() {
-            if (data['data'] != null && data['data'] is List) {
-              _InfosTicket =
-                  data['data']; // On extrait les tickets de la clé "data"
-            } else {
-              _InfosTicket = [];
-            }
-          });
-        } catch (e) {
-          debugPrint('Erreur de parsing JSON : $e');
-          setState(() {
-            _InfosTicket = [];
-          });
-        }
+        final data = jsonDecode(response.body);
+        setState(() {
+          _InfosTicket = data['data'] is List ? data['data'] : [];
+        });
       } else {
-        debugPrint('Serveur : réponse ${response.statusCode}');
         setState(() {
           _InfosTicket = [];
         });
       }
     } catch (e) {
-      debugPrint('Erreur de connexion : $e');
       setState(() {
         _InfosTicket = [];
       });
@@ -98,39 +90,73 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
     }
   }
 
-  void initState() {
-    super.initState();
-    _TicDispo(); // Appel pour récupérer les tickets au démarrage
-  }
-
   Future<void> _generateAndPreviewPDF() async {
     final pdf = pw.Document();
 
     final name = _nameController.text;
     final email = _emailController.text;
-    final event = _eventController.text;
+    final num = _numController.text;
     final date = _dateController.text;
 
-    final ticketData =
-        "Nom : $name\nEmail : $email\nÉvénement : $event\nDate : $date";
+    // Charger l'image d'arrière-plan depuis les assets
+    final imageBytes = await rootBundle.load('images/tikii.jpg');
+    final backgroundImage = pw.MemoryImage(imageBytes.buffer.asUint8List());
 
     pdf.addPage(
       pw.Page(
-        build: (context) => pw.Column(
-          mainAxisAlignment: pw.MainAxisAlignment.center,
-          children: [
-            pw.Text("Votre Ticket", style: pw.TextStyle(fontSize: 20)),
-            pw.SizedBox(height: 20),
-            pw.Text(ticketData),
-            pw.SizedBox(height: 20),
-            pw.BarcodeWidget(
-              barcode: pw.Barcode.qrCode(),
-              data: "$name|$email|$event|$date",
-              width: 100,
-              height: 100,
-            ),
-          ],
-        ),
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          return pw.Stack(
+            children: [
+              // Arrière-plan
+              pw.Positioned.fill(
+                child: pw.Image(backgroundImage, fit: pw.BoxFit.cover),
+              ),
+              // Contenu du ticket
+              pw.Center(
+                child: pw.Container(
+                  padding: pw.EdgeInsets.all(20),
+                  decoration: pw.BoxDecoration(
+                    border: pw.Border.all(width: 2),
+                  ),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [
+                      pw.Text("Ticket de match",
+                          style: pw.TextStyle(
+                              fontSize: 40, fontWeight: pw.FontWeight.bold)),
+                      pw.SizedBox(height: 20),
+                      pw.Text("Nom : $name",
+                          style: pw.TextStyle(
+                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                      pw.Text("Porte : Toutes les portes ",
+                          style: pw.TextStyle(
+                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                      pw.Text("Stade : Ali-Ammar 'La pointe'",
+                          style: pw.TextStyle(
+                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                      // pw.Text("Date : $date",
+                      //  style: pw.TextStyle(
+                      //     fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                      pw.SizedBox(height: 20),
+                      pw.BarcodeWidget(
+                        barcode: pw.Barcode.qrCode(),
+                        data: "$name|$email|$num|$date",
+                        width: 100,
+                        height: 100,
+                      ),
+                      pw.SizedBox(height: 15),
+                      pw.Text("Merci d'avoir participé !",
+                          style: pw.TextStyle(
+                              fontSize: 30, fontWeight: pw.FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
 
@@ -145,12 +171,6 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 160, 189, 159),
         title: const Text('Formulaire de Ticket'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pushReplacementNamed('HomeScreen');
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -167,70 +187,44 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Afficher nbrtic et TotalTicket tout en haut
                     _InfosTicket.isNotEmpty
                         ? Text(
-                            'Nbr Tickets: ${_InfosTicket.first['ticnbr']} / Total Tickets: ${_InfosTicket.first['TotalTicket']}',
+                            'Tickets disponibles: ${_InfosTicket.first['ticnbr']} / ${_InfosTicket.first['TotalTicket']}',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           )
                         : Text('Aucun ticket disponible',
                             style: TextStyle(fontSize: 18)),
-
                     const SizedBox(height: 20),
-
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
                         labelText: 'Nom complet',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        border: OutlineInputBorder(),
                       ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Veuillez entrer votre nom.'
-                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer votre email.';
-                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                            .hasMatch(value)) {
-                          return 'Veuillez entrer un email valide.';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _eventController,
+                      controller: _numController,
                       decoration: InputDecoration(
-                        labelText: 'Événement',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        labelText: 'Numero téléphone',
+                        border: OutlineInputBorder(),
                       ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Veuillez entrer un événement.'
-                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _dateController,
                       decoration: InputDecoration(
-                        labelText: 'Date (JJ/MM/AAAA)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        labelText: 'Date de naissance ',
+                        border: OutlineInputBorder(),
                       ),
                       onTap: () async {
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -245,39 +239,17 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
                               DateFormat('dd/MM/yyyy').format(pickedDate);
                         }
                       },
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Veuillez entrer une date.'
-                          : null,
                     ),
                     const SizedBox(height: 20),
                     Center(
                       child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () async {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                if (_formKey.currentState!.validate()) {
-                                  await _submitForm();
-                                  await _generateAndPreviewPDF();
-                                }
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 160, 189, 159),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 15,
-                          ),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text('Générer le ticket'),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _submitForm();
+                            await _generateAndPreviewPDF();
+                          }
+                        },
+                        child: const Text('Générer le ticket'),
                       ),
                     ),
                   ],

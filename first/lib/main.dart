@@ -1,9 +1,9 @@
 import 'package:first/screen/ArticleDetaills.dart';
 import 'package:first/screen/HomeScreen.dart';
 
-//import 'package:first/screen/Matchs.dart';
 import 'package:first/screen/PasswordR.dart';
 import 'package:first/screen/TicketFormScreen.dart';
+import 'package:first/screen/product_details.dart';
 //import 'package:first/screen/store.dart';
 import 'package:flutter/material.dart';
 import 'package:first/screen/login.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           'PasswordR': (context) => const PasswordR(),
           'Signupscreen': (context) => const Signupscreen(),
           'Loginscreen': (context) => const Loginscreen(),
-          //'Matchs': (context) => const Matchs(),
+          // 'ProductDetails': (context) => const ProductDetails(),
           'WelcomeScreen': (context) => const WelcomeScreen(),
           'TicketFormScreen': (context) => const TicketFormScreen(),
         });

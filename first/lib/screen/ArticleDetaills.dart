@@ -22,8 +22,8 @@ class _ArticleDetailsState extends State<ArticleDetails> {
   }
 
   Future<Map<String, dynamic>> fetchArticleDetails(String articleId) async {
-    final url =
-        Uri.parse('http://10.0.2.2/flutterback/ArticleById.php?id=$articleId');
+    final url = Uri.parse(
+        'http://192.168.100.2/flutterback/ArticleById.php?id=$articleId');
 
     final response = await http.get(url);
 

@@ -40,7 +40,7 @@ class _BuyStoreScreenState extends State<BuyStoreScreen> {
     }
 
     const String url =
-        'http://10.0.2.2/flutterback/add_order.php'; // URL de votre script PHP
+        'http://192.168.100.2/flutterback/add_order.php'; // URL de votre script PHP
     final response = await http.post(
       Uri.parse(url),
       headers: {"Content-Type": "application/json"},

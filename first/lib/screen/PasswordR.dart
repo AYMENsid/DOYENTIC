@@ -22,7 +22,7 @@ class _PasswordRState extends State<PasswordR> {
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
       final url = Uri.parse(
-          'http://10.0.2.2/flutterback/recover_password.php'); // Remplace par l'URL de ton API PHP
+          'http://192.168.100.2/flutterback/recover_password.php'); // Remplace par l'URL de ton API PHP
 
       try {
         final response = await http.post(

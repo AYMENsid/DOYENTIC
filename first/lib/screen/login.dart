@@ -68,7 +68,8 @@ class _LoginscreenState extends State<Loginscreen> {
     try {
       // Requête HTTP POST
       final response = await http.post(
-        Uri.parse("http://10.0.2.2/flutterback/login.php"),
+        Uri.parse(
+            "http://192.168.100.2/flutterback/login.php"), // 10.0.2.2 sur emulateur
         headers: {"Content-Type": "application/json"},
         body: json.encode(data),
       );

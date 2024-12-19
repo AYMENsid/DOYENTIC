@@ -684,151 +684,178 @@ class _MyHomePageState extends State<HomeScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: _footballMatch.map((match) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16.0),
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Ligne supérieure (Type et heure)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Présentation spécifique du match
+              Text(
+                'Présentation du match :',
+                style: GoogleFonts.cairo(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                match['presentation'] ?? 'Aucune présentation disponible.',
+                style: GoogleFonts.cairo(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Carte du match
+              Card(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      Text(
-                        match['type'] ?? 'Football • Equipe sénior',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Text(
-                        match['heur'] ?? '24 Jul - 04:10',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // Score et noms des équipes
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Équipe A
-                      Column(
+                      // Ligne supérieure (Type et heure)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          match['imageA'] != null
-                              ? Image.asset(
-                                  match['imageA'],
-                                  width: 40,
-                                  height: 40,
-                                )
-                              : const Icon(Icons.error, size: 40),
-                          const SizedBox(height: 8),
                           Text(
-                            match['equipeA'] ?? 'Real Madrid',
+                            match['type'] ?? 'Football • Equipe sénior',
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            match['heur'] ?? '24 Jul - 04:10',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
-                      // Score
+                      const SizedBox(height: 16),
+                      // Score et noms des équipes
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Équipe A
+                          Column(
+                            children: [
+                              match['imageA'] != null
+                                  ? Image.asset(
+                                      match['imageA'],
+                                      width: 40,
+                                      height: 40,
+                                    )
+                                  : const Icon(Icons.error, size: 40),
+                              const SizedBox(height: 8),
+                              Text(
+                                match['equipeA'] ?? 'Real Madrid',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Score
+                          Column(
+                            children: [
+                              Center(
+                                child: Text(
+                                  'VS',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Container(
+                              // padding: const EdgeInsets.symmetric(
+                              //   horizontal: 12,
+                              //   vertical: 4,
+                              // ),
+                              //  decoration: BoxDecoration(
+                              //   color: Colors.blue.shade50,
+                              //    borderRadius: BorderRadius.circular(12.0),
+                              //  ),
+                              //child: const Text(
+                              //  'Full time',
+                              ///  style: TextStyle(
+                              //     fontSize: 12,
+                              //     color: Colors.blue,
+                              ////     fontWeight: FontWeight.bold,
+                              //   ),
+                              // ),
+                              //  ),
+                            ],
+                          ),
+                          // Équipe B
+                          Column(
+                            children: [
+                              match['imageB'] != null
+                                  ? Image.asset(
+                                      match['imageB'],
+                                      width: 40,
+                                      height: 40,
+                                    )
+                                  : const Icon(Icons.error, size: 40),
+                              const SizedBox(height: 8),
+                              Text(
+                                match['equipeB'] ?? 'Milan',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Bouton et lieu
                       Column(
                         children: [
-                          Text(
-                            'VS',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                          ElevatedButton(
+                            onPressed:
+                                ToFormMatch, // Implement this function to handle navigation
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              side: const BorderSide(color: Colors.green),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: const Text(
-                              'Full time',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
+                            child: Center(
+                              child: const Text(
+                                'Réserver le ticket',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                      // Équipe B
-                      Column(
-                        children: [
-                          match['imageB'] != null
-                              ? Image.asset(
-                                  match['imageB'],
-                                  width: 40,
-                                  height: 40,
-                                )
-                              : const Icon(Icons.error, size: 40),
                           const SizedBox(height: 8),
                           Text(
-                            match['equipeB'] ?? 'Milan',
+                            match['lieu'] ?? 'Stade Ali-Ammar • Alger',
                             style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: Colors.grey,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  // Bouton et lieu
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed:
-                            ToFormMatch, // Implement this function to handle navigation
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          side: const BorderSide(color: Colors.blue),
-                        ),
-                        child: const Text(
-                          'Réserver le ticket',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        match['lieu'] ?? 'Stade Ali-Ammar • Alger',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         }).toList(),
       ),

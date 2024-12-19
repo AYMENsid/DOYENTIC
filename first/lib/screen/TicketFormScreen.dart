@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:first/screen/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:http/http.dart' as http;
@@ -116,9 +117,9 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
               pw.Center(
                 child: pw.Container(
                   padding: pw.EdgeInsets.all(20),
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border.all(width: 2),
-                  ),
+                  //decoration: pw.BoxDecoration(
+                  // border: pw.Border.all(width: 2),
+                  // ),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -129,13 +130,13 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
                       pw.SizedBox(height: 20),
                       pw.Text("Nom : $name",
                           style: pw.TextStyle(
-                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                              fontSize: 28, fontWeight: pw.FontWeight.normal)),
                       pw.Text("Porte : Toutes les portes ",
                           style: pw.TextStyle(
-                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                              fontSize: 28, fontWeight: pw.FontWeight.normal)),
                       pw.Text("Stade : Ali-Ammar 'La pointe'",
                           style: pw.TextStyle(
-                              fontSize: 28, fontWeight: pw.FontWeight.bold)),
+                              fontSize: 28, fontWeight: pw.FontWeight.normal)),
                       // pw.Text("Date : $date",
                       //  style: pw.TextStyle(
                       //     fontSize: 28, fontWeight: pw.FontWeight.bold)),
@@ -170,95 +171,222 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 160, 189, 159),
-        title: const Text('Formulaire de Ticket'),
+        title: Text(
+          'Formulaire de Ticket',
+          style: const TextStyle(
+            color: Color.fromARGB(255, 0, 0, 0),
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      HomeScreen()), // Remplacez par l'écran vers lequel vous voulez revenir.
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _InfosTicket.isNotEmpty
-                        ? Text(
-                            'Tickets disponibles: ${_InfosTicket.first['ticnbr']} / ${_InfosTicket.first['TotalTicket']}',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          )
-                        : Text('Aucun ticket disponible',
-                            style: TextStyle(fontSize: 18)),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Nom complet',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _numController,
-                      decoration: InputDecoration(
-                        labelText: 'Numero téléphone',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _dateController,
-                      decoration: InputDecoration(
-                        labelText: 'Date de naissance ',
-                        border: OutlineInputBorder(),
-                      ),
-                      onTap: () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                        );
-                        if (pickedDate != null) {
-                          _dateController.text =
-                              DateFormat('dd/MM/yyyy').format(pickedDate);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            await _submitForm();
-                            await _generateAndPreviewPDF();
-                          }
-                        },
-                        child: const Text('Générer le ticket'),
-                      ),
-                    ),
-                  ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Texte d'introduction avec style amélioré
+              Text(
+                "Bienvenue dans le formulaire de ticket. Veuillez remplir les informations ci-dessous pour générer votre ticket.",
+                style: GoogleFonts.cairo(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
+              SizedBox(height: 20),
+
+              // Engagements avec des styles distincts
+              Text(
+                "- Je m'engage à préserver les biens publics et les installations présentes dans le stade .",
+                style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey),
+              ),
+              Text(
+                "- Je m'engage à respecter l'interdiction d'introduire tout objet dangereux dans le stade .",
+                style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey),
+              ),
+              Text(
+                "- Je m'engage à respecter les autres supporters et les participants .",
+                style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey),
+              ),
+              Text(
+                "- Je m'engage à respecter les règles de conduite et les lois en vigueur dans le stade . ",
+                style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey),
+              ),
+              const SizedBox(height: 20),
+
+              // Card pour le formulaire
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Affichage des tickets disponibles
+                        _InfosTicket.isNotEmpty
+                            ? Text(
+                                '   Tickets disponibles: ${_InfosTicket.first['ticnbr']} / ${_InfosTicket.first['TotalTicket']}',
+                                style: GoogleFonts.cairo(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black),
+                              )
+                            : Text(
+                                'Aucun ticket disponible',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                        const SizedBox(height: 20),
+
+                        // Champs du formulaire
+                        _buildTextField(
+                          controller: _nameController,
+                          label: 'Nom complet',
+                          icon: Icons.person,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: _emailController,
+                          label: 'Email',
+                          icon: Icons.email,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: _numController,
+                          label: 'Numéro téléphone',
+                          icon: Icons.phone,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildDateField(
+                          controller: _dateController,
+                          label: 'Date de naissance',
+                          icon: Icons.calendar_today,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Bouton de soumission
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              side: const BorderSide(color: Colors.green),
+                            ),
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                await _submitForm();
+                                await _generateAndPreviewPDF();
+                              }
+                            },
+                            child: Text(
+                              'Générer le ticket',
+                              style: GoogleFonts.cairo(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+// Méthode pour un texte d'engagement avec un style uniforme
+  Widget _buildEngagementText(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black54,
+        ),
+      ),
+    );
+  }
+
+// Méthode pour générer un champ de texte standard
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+// Méthode pour générer un champ de sélection de date
+  Widget _buildDateField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(),
+      ),
+      onTap: () async {
+        FocusScope.of(context).requestFocus(FocusNode());
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+        );
+        if (pickedDate != null) {
+          controller.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+        }
+      },
     );
   }
 }

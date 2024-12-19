@@ -100,7 +100,15 @@ class _BuyStoreScreenState extends State<BuyStoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Commander - ${widget.productName}'),
+        title: Text(
+          'Commander - ${widget.productName}',
+          style: const TextStyle(
+            color: Color.fromARGB(255, 0, 0, 0),
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 160, 189, 159),
       ),
       body: SingleChildScrollView(
@@ -131,11 +139,11 @@ class _BuyStoreScreenState extends State<BuyStoreScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Choisissez une taille',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                        //const Text(
+                        //  'Choisissez une taille',
+                        //  style: TextStyle(
+                        //      fontSize: 16, fontWeight: FontWeight.bold),
+                        //),
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,

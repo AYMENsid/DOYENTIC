@@ -58,7 +58,7 @@ class _SignupscreenState extends State<Signupscreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.100.2/flutterback/register2.php"),
+        Uri.parse("http://192.168.246.51/flutterback/register2.php"),
         headers: {"Content-Type": "application/json"},
         body: json.encode(data),
       );

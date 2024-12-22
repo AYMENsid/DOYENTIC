@@ -34,7 +34,7 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final url = Uri.parse(
-          'http://192.168.100.2/flutterback/ticketinfo.php'); // 10.0.2.2 sur emulateur
+          'http://192.168.246.51/flutterback/ticketinfo.php'); // 10.0.2.2 sur emulateur
       try {
         final response = await http.post(
           url,
@@ -63,7 +63,7 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
 
   Future<void> _TicDispo() async {
     final url =
-        'http://192.168.100.2/flutterback/TicDispo.php'; // 10.0.2.2 sur emulateur
+        'http://192.168.246.51/flutterback/TicDispo.php'; // 10.0.2.2 sur emulateur
     setState(() {
       _isLoading = true;
     });

@@ -23,7 +23,7 @@ class ConfirmationForm extends StatelessWidget {
         String newPassword = passwordController.text;
 
         final url = Uri.parse(
-            'http://192.168.100.2/flutterback/reset_password.php'); // Remplace par l'URL de ton API PHP
+            'http://192.168.246.51/flutterback/reset_password.php'); // Remplace par l'URL de ton API PHP
 
         try {
           final response = await http.post(

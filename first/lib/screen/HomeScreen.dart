@@ -30,9 +30,10 @@ class _MyHomePageState extends State<HomeScreen> {
 
   /////////////////////////////////////////////////////////////////////////
   ////
-  ///  // Méthode pour charger les produits
+  ///
+  /// // Méthode pour charger les produits
   Future<List<Product>> fetchProducts() async {
-    const String url = 'http://192.168.100.2/flutterback/get_products.php';
+    const String url = 'http://192.168.246.51/flutterback/get_products.php';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<HomeScreen> {
   // Méthode pour récupérer les match du FOOTBALL via l'API
   Future<void> _fetchInfoMatchs() async {
     final url =
-        'http://192.168.100.2/flutterback/footballmatch.php'; // // 10.0.2.2 sur emulateur
+        'http://192.168.246.51/flutterback/footballmatch.php'; // // 10.0.2.2 sur emulateur
     setState(() {
       _isLoading = true;
     });
@@ -81,7 +82,7 @@ class _MyHomePageState extends State<HomeScreen> {
   // Méthode pour récupérer les infos du BASKETBALL via l'API
   Future<void> _fetchSportInfo() async {
     final url =
-        'http://192.168.100.2/flutterback/basketballarticle.php'; // Remplacez par l'URL de votre API
+        'http://192.168.246.51/flutterback/basketballarticle.php'; // Remplacez par l'URL de votre API
     setState(() {
       _isLoading = true;
     });
@@ -117,7 +118,7 @@ class _MyHomePageState extends State<HomeScreen> {
   // Méthode pour récupérer les infos du Handball via l'API
   Future<void> _fetchSportHInfo() async {
     final url =
-        'http://192.168.100.2/flutterback/handballarticle.php'; // Remplacez par l'URL de votre API
+        'http://192.168.246.51/flutterback/handballarticle.php'; // Remplacez par l'URL de votre API
     setState(() {
       _isLoading = true;
     });
@@ -152,7 +153,7 @@ class _MyHomePageState extends State<HomeScreen> {
   // Méthode pour récupérer les infos du Volley via l'API
   Future<void> _fetchSportVInfo() async {
     final url =
-        'http://192.168.100.2/flutterback/volleyballarticle.php'; // Remplacez par l'URL de votre API
+        'http://192.168.246.51/flutterback/volleyballarticle.php'; // Remplacez par l'URL de votre API
     setState(() {
       _isLoading = true;
     });
@@ -187,7 +188,7 @@ class _MyHomePageState extends State<HomeScreen> {
   // Méthode pour récupérer les infos du FOOTBALL via l'API
   Future<void> _fetchSportFInfo() async {
     final url =
-        'http://192.168.100.2/flutterback/footballarticle.php'; // Remplacez par l'URL de votre API
+        'http://192.168.246.51/flutterback/footballarticle.php'; // Remplacez par l'URL de votre API
     setState(() {
       _isLoading = true;
     });
